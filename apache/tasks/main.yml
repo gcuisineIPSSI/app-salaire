@@ -1,0 +1,76 @@
+---
+
+ - name: Installer apache
+   yum:
+    name: httpd
+    state: latest
+
+ - name: créer répertoires /var/www/app-salaire.greg.form/html
+   file:
+    path: "/var/www/app-salaire.greg.form/html"
+    state: directory
+    owner: root
+    group: root
+    recurse: yes
+
+ - name: créer répertoire logs
+   file:
+    path: /var/www.app-salaire.greg.form/log
+    state: directory
+    owner: root
+    group: root
+    recurse: yes
+  
+ - name: Modification des autorisations sur /var/www
+   file:
+    path: "/var/www/"
+    owner: root
+    group: root
+    mode: '0755'
+    recurse: yes
+
+ - name : copier template index.j2 vers /var/www/app-salaire.greg.form/html
+   template:
+    src: "index.j2"
+    dest: "/var/www/app-salaire.greg.form/html"
+
+ - name: création repertoire /etc/httpd/sites-available
+   file:
+    path: "/etc/httpd/sites-available"
+    state: directory
+    owner: root
+    group: root
+
+ - name: création répertoire /etc/httpd/sites-enabled
+   file:
+    path: "/etc/httpd/sites-enabled"
+    state: directory
+    owner: root
+    group: root
+
+ - name: création app-salaire.greg.form.conf dans /etc/httpd/sites-available depuis template
+   template:
+    src: "app-salaire.greg.form.conf"
+    dest: "/etc/httpd/sites-available"
+
+ - name: insertion ligne IncludeOptional sites-enabled/*.conf dans /etc/httpd/conf/httpd.conf
+   lineinfile:
+    path: "/etc/httpd/conf/httpd.conf"
+    line: "      IncludeOptional sites-enabled/*.conf"
+
+ - name: création fichier app-salaire.greg.form.conf dans /etc/httpd/sites-available
+   template:
+    src: "app-salaire.greg.form.conf"
+    dest: "/etc/httpd/sites-available"   
+
+ - name: ouvrir le port 80/http
+   firewalld: 
+    service: http
+    permanent: yes
+    state: enabled
+
+
+
+
+
+

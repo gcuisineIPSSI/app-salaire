@@ -1,0 +1,6 @@
+
+- name: install apache
+  hosts: all
+  roles:
+    - apache
+    - mariadb
